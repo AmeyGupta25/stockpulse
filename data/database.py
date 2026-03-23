@@ -6,30 +6,15 @@ import os
 
 load_dotenv()
 
+DATABASE_URL = os.getenv("DATABASE_URL")
 DB_NAME = "stockpulse"
 DB_USER = os.getenv("DB_USER", "postgres")
 DB_HOST = "localhost"
 DB_PORT = "5432"
 
-def create_database():
-    conn = psycopg2.connect(
-        dbname="postgres",
-        user=DB_USER,
-        host=DB_HOST,
-        port=DB_PORT
-    )
-    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-    cur = conn.cursor()
-    cur.execute("SELECT 1 FROM pg_database WHERE datname = 'stockpulse'")
-    if not cur.fetchone():
-        cur.execute("CREATE DATABASE stockpulse")
-        print("Database created!")
-    else:
-        print("Database already exists.")
-    cur.close()
-    conn.close()
-
 def get_engine():
+    if DATABASE_URL:
+        return create_engine(DATABASE_URL)
     return create_engine(
         f"postgresql://{DB_USER}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
@@ -78,5 +63,4 @@ def create_tables():
         print("Tables created!")
 
 if __name__ == "__main__":
-    create_database()
     create_tables()
