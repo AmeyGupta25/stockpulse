@@ -2,7 +2,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import requests
 
-API_BASE = "http://localhost:8000"
+API_BASE = "https://stockpulse-api-rt7t.onrender.com"
 TICKERS = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOGL", "AMZN", "META", "JPM", "NFLX", "AMD"]
 
 BG = "#F8F9FA"
