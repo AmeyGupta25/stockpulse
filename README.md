@@ -3,7 +3,8 @@
 A full-stack data engineering and machine learning project that tracks real-time stock prices, analyzes news sentiment, and predicts next-day price direction using XGBoost.
 
 ## Live Demo
-> Dashboard screenshots below
+> <img width="1470" height="838" alt="Screenshot 2026-03-22 at 11 24 34 PM" src="https://github.com/user-attachments/assets/2d756ff7-efaa-4966-8539-5f50880adb17" />
+
 
 ## Tech Stack
 - **Data Ingestion:** yfinance, Alpha Vantage API, Yahoo Finance News
