@@ -3,7 +3,7 @@ from plotly.subplots import make_subplots
 import requests
 
 API_BASE = "http://localhost:8000"
-TICKERS = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOGL"]
+TICKERS = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOGL", "AMZN", "META", "JPM", "NFLX", "AMD"]
 
 BG = "#F8F9FA"
 CARD = "#FFFFFF"

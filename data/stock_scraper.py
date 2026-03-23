@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TICKERS = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOGL"]
+TICKERS = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOGL", "AMZN", "META", "JPM", "NFLX", "AMD"]
 
 def fetch_and_store_prices(ticker, period="6mo"):
     print(f"Fetching prices for {ticker}...")

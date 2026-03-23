@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TICKERS = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOGL"]
+TICKERS = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOGL", "AMZN", "META", "JPM", "NFLX", "AMD"]
 
 FEATURES = [
     "price_change",

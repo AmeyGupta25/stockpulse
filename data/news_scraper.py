@@ -7,7 +7,7 @@ import datetime
 
 load_dotenv()
 
-TICKERS = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOGL"]
+TICKERS = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOGL", "AMZN", "META", "JPM", "NFLX", "AMD"]
 analyzer = SentimentIntensityAnalyzer()
 
 def fetch_and_store_news(ticker):

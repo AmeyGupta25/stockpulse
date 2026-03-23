@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-TICKERS = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOGL"]
+TICKERS = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOGL", "AMZN", "META", "JPM", "NFLX", "AMD"]
 
 FEATURES = [
     "price_change",
