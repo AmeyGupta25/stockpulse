@@ -3,11 +3,20 @@
 A full-stack data engineering and machine learning project that tracks real-time stock prices, analyzes news sentiment, and predicts next-day price direction using XGBoost.
 
 ## Live Links
-- **API:** https://stockpulse-api-rt7t.onrender.com
-- **API Docs:** https://stockpulse-api-rt7t.onrender.com/docs
-- **Dashboards:** https://ameygupta25.github.io/stockpulse/AAPL_dashboard.html
+- **Live API:** https://stockpulse-api-rt7t.onrender.com
+- **Live API Docs:** https://stockpulse-api-rt7t.onrender.com/docs
+- **AAPL Dashboard:** https://ameygupta25.github.io/stockpulse/AAPL_dashboard.html
+- **TSLA Dashboard:** https://ameygupta25.github.io/stockpulse/TSLA_dashboard.html
+- **NVDA Dashboard:** https://ameygupta25.github.io/stockpulse/NVDA_dashboard.html
+- **MSFT Dashboard:** https://ameygupta25.github.io/stockpulse/MSFT_dashboard.html
+- **GOOGL Dashboard:** https://ameygupta25.github.io/stockpulse/GOOGL_dashboard.html
+- **AMZN Dashboard:** https://ameygupta25.github.io/stockpulse/AMZN_dashboard.html
+- **META Dashboard:** https://ameygupta25.github.io/stockpulse/META_dashboard.html
+- **JPM Dashboard:** https://ameygupta25.github.io/stockpulse/JPM_dashboard.html
+- **NFLX Dashboard:** https://ameygupta25.github.io/stockpulse/NFLX_dashboard.html
+- **AMD Dashboard:** https://ameygupta25.github.io/stockpulse/AMD_dashboard.html
 
-## Live Demo
+## Dashboard Snapshots
 
 | Ticker | Dashboard |
 |---|---|
@@ -23,13 +32,13 @@ A full-stack data engineering and machine learning project that tracks real-time
 | AMD | [View Dashboard](https://ameygupta25.github.io/stockpulse/AMD_dashboard.html) |
 
 ## Tech Stack
-- **Data Ingestion:** yfinance, Alpha Vantage API, Yahoo Finance News
+- **Data Ingestion:** yfinance, Yahoo Finance News
 - **Sentiment Analysis:** VADER (Valence Aware Dictionary and sEntiment Reasoner)
 - **ML Model:** XGBoost classifier with feature engineering
 - **Backend:** FastAPI with auto-generated API docs
 - **Database:** PostgreSQL with SQLAlchemy ORM
 - **Dashboard:** Plotly interactive visualizations
-- **Deployment:** Docker, Render, GitHub Actions CI/CD
+- **Deployment:** Render (API), GitHub Pages (dashboards)
 
 ## Architecture
 ```
@@ -64,7 +73,7 @@ yfinance / Yahoo Finance News
 ```
 
 ## Features
-- Tracks 5 tickers: AAPL, TSLA, NVDA, MSFT, GOOGL
+- Tracks 10 tickers: AAPL, TSLA, NVDA, MSFT, GOOGL, AMZN, META, JPM, NFLX, AMD
 - Pulls and stores 6 months of historical price data
 - Scores news headlines with VADER sentiment analysis
 - Engineers 9 features combining price momentum and sentiment signals
@@ -83,11 +92,16 @@ yfinance / Yahoo Finance News
 ## Model Performance
 | Ticker | Accuracy |
 |---|---|
-| AAPL | 41.7% |
-| TSLA | 54.2% |
-| NVDA | 45.8% |
+| AAPL | 45.8% |
+| TSLA | 50.0% |
+| NVDA | 41.7% |
 | MSFT | 41.7% |
-| GOOGL | 54.2% |
+| GOOGL | 45.8% |
+| AMZN | 50.0% |
+| META | 45.8% |
+| JPM | 54.2% |
+| NFLX | 54.2% |
+| AMD | 50.0% |
 
 > Note: Stock price prediction is an inherently noisy problem. These results are expected for a model trained on 6 months of data with limited sentiment overlap. Model performance improves as more sentiment data accumulates over time. This project is a proof of concept demonstrating end-to-end ML pipeline architecture, not a trading system.
 
