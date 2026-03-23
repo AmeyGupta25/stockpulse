@@ -3,8 +3,19 @@
 A full-stack data engineering and machine learning project that tracks real-time stock prices, analyzes news sentiment, and predicts next-day price direction using XGBoost.
 
 ## Live Demo
-<img width="1470" height="838" alt="Screenshot 2026-03-22 at 11 24 34 PM" src="https://github.com/user-attachments/assets/2d756ff7-efaa-4966-8539-5f50880adb17" />
 
+| Ticker | Dashboard |
+|---|---|
+| AAPL | [View Dashboard](https://ameygupta25.github.io/stockpulse/AAPL_dashboard.html) |
+| TSLA | [View Dashboard](https://ameygupta25.github.io/stockpulse/TSLA_dashboard.html) |
+| NVDA | [View Dashboard](https://ameygupta25.github.io/stockpulse/NVDA_dashboard.html) |
+| MSFT | [View Dashboard](https://ameygupta25.github.io/stockpulse/MSFT_dashboard.html) |
+| GOOGL | [View Dashboard](https://ameygupta25.github.io/stockpulse/GOOGL_dashboard.html) |
+| AMZN | [View Dashboard](https://ameygupta25.github.io/stockpulse/AMZN_dashboard.html) |
+| META | [View Dashboard](https://ameygupta25.github.io/stockpulse/META_dashboard.html) |
+| JPM | [View Dashboard](https://ameygupta25.github.io/stockpulse/JPM_dashboard.html) |
+| NFLX | [View Dashboard](https://ameygupta25.github.io/stockpulse/NFLX_dashboard.html) |
+| AMD | [View Dashboard](https://ameygupta25.github.io/stockpulse/AMD_dashboard.html) |
 
 ## Tech Stack
 - **Data Ingestion:** yfinance, Alpha Vantage API, Yahoo Finance News
