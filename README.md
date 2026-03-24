@@ -3,33 +3,14 @@
 A full-stack data engineering and machine learning project that tracks real-time stock prices, analyzes news sentiment, and predicts next-day price direction using XGBoost.
 
 ## Live Links
+- **Live Dashboard:** https://ameygupta25.github.io/stockpulse/
 - **Live API:** https://stockpulse-api-rt7t.onrender.com
-- **Live API Docs:** https://stockpulse-api-rt7t.onrender.com/docs
-- **AAPL Dashboard:** https://ameygupta25.github.io/stockpulse/AAPL_dashboard.html
-- **TSLA Dashboard:** https://ameygupta25.github.io/stockpulse/TSLA_dashboard.html
-- **NVDA Dashboard:** https://ameygupta25.github.io/stockpulse/NVDA_dashboard.html
-- **MSFT Dashboard:** https://ameygupta25.github.io/stockpulse/MSFT_dashboard.html
-- **GOOGL Dashboard:** https://ameygupta25.github.io/stockpulse/GOOGL_dashboard.html
-- **AMZN Dashboard:** https://ameygupta25.github.io/stockpulse/AMZN_dashboard.html
-- **META Dashboard:** https://ameygupta25.github.io/stockpulse/META_dashboard.html
-- **JPM Dashboard:** https://ameygupta25.github.io/stockpulse/JPM_dashboard.html
-- **NFLX Dashboard:** https://ameygupta25.github.io/stockpulse/NFLX_dashboard.html
-- **AMD Dashboard:** https://ameygupta25.github.io/stockpulse/AMD_dashboard.html
+- **API Docs:** https://stockpulse-api-rt7t.onrender.com/docs
 
-## Dashboard Snapshots
+> Note: The API is hosted on Render's free tier and may take up to 50 seconds to wake up after inactivity.
 
-| Ticker | Dashboard |
-|---|---|
-| AAPL | [View Dashboard](https://ameygupta25.github.io/stockpulse/AAPL_dashboard.html) |
-| TSLA | [View Dashboard](https://ameygupta25.github.io/stockpulse/TSLA_dashboard.html) |
-| NVDA | [View Dashboard](https://ameygupta25.github.io/stockpulse/NVDA_dashboard.html) |
-| MSFT | [View Dashboard](https://ameygupta25.github.io/stockpulse/MSFT_dashboard.html) |
-| GOOGL | [View Dashboard](https://ameygupta25.github.io/stockpulse/GOOGL_dashboard.html) |
-| AMZN | [View Dashboard](https://ameygupta25.github.io/stockpulse/AMZN_dashboard.html) |
-| META | [View Dashboard](https://ameygupta25.github.io/stockpulse/META_dashboard.html) |
-| JPM | [View Dashboard](https://ameygupta25.github.io/stockpulse/JPM_dashboard.html) |
-| NFLX | [View Dashboard](https://ameygupta25.github.io/stockpulse/NFLX_dashboard.html) |
-| AMD | [View Dashboard](https://ameygupta25.github.io/stockpulse/AMD_dashboard.html) |
+## Demo
+<img width="1470" height="838" alt="StockPulse Dashboard" src="https://github.com/user-attachments/assets/2d756ff7-efaa-4966-8539-5f50880adb17" />
 
 ## Tech Stack
 - **Data Ingestion:** yfinance, Yahoo Finance News
@@ -37,8 +18,8 @@ A full-stack data engineering and machine learning project that tracks real-time
 - **ML Model:** XGBoost classifier with feature engineering
 - **Backend:** FastAPI with auto-generated API docs
 - **Database:** PostgreSQL with SQLAlchemy ORM
-- **Dashboard:** Plotly interactive visualizations
-- **Deployment:** Render (API), GitHub Pages (dashboards)
+- **Frontend:** Vanilla JS + Plotly.js (live API calls, no page refresh needed)
+- **Deployment:** Render (API + database), GitHub Pages (frontend)
 
 ## Architecture
 ```
@@ -69,17 +50,18 @@ yfinance / Yahoo Finance News
   /prices /sentiment /prediction
         │
         ▼
-  Plotly Dashboard
+  Live Interactive Dashboard (GitHub Pages)
+  Fetches from API in real time on every visit
 ```
 
 ## Features
 - Tracks 10 tickers: AAPL, TSLA, NVDA, MSFT, GOOGL, AMZN, META, JPM, NFLX, AMD
-- Pulls and stores 6 months of historical price data
+- Pulls and stores 6 months of historical OHLCV price data
 - Scores news headlines with VADER sentiment analysis
 - Engineers 9 features combining price momentum and sentiment signals
-- Trains an XGBoost model per ticker to predict next-day price direction
+- Trains an XGBoost classifier per ticker to predict next-day price direction
 - Serves live predictions through a REST API with auto-generated docs
-- Renders an interactive dashboard with price chart, volume, sentiment table, and ML prediction
+- Renders a live interactive dashboard that fetches real-time data from the API on every visit
 
 ## API Endpoints
 | Endpoint | Description |
@@ -139,9 +121,6 @@ python -m models.train
 
 # Start API
 uvicorn api.main:app --reload
-
-# Generate dashboards
-python -m dashboard.app
 ```
 
 ## Project Structure
@@ -158,6 +137,6 @@ stockpulse/
 ├── api/
 │   └── main.py            # FastAPI REST endpoints
 ├── dashboard/
-│   └── app.py             # Plotly dashboard generation
+│   └── app.py             # Local Plotly dashboard generation
 └── .env                   # API keys (not committed)
 ```
