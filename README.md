@@ -3,7 +3,7 @@
 A full-stack data engineering and machine learning project that tracks real-time stock prices, analyzes news sentiment, and predicts next-day price direction using XGBoost.
 
 ## Live Links
-- **Live Dashboard:** https://ameygupta25.github.io/stockpulse/
+- **Live Dashboard:** https://ameygupta25.github.io/stockpulse/index.html
 - **Live API:** https://stockpulse-api-rt7t.onrender.com
 - **API Docs:** https://stockpulse-api-rt7t.onrender.com/docs
 
