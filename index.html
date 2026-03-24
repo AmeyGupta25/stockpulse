@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StockPulse Analytics</title>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', Arial, sans-serif; background: #F8F9FA; color: #1A1A2E; }
+
+    .header { background: #fff; border-bottom: 1px solid #E0E0E0; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+    .header h1 { font-size: 20px; font-weight: 600; }
+    .header h1 span { color: #6B7280; font-weight: 400; }
+    .api-badge { font-size: 11px; background: #E8F5E9; color: #00897B; padding: 4px 10px; border-radius: 20px; }
+
+    .ticker-bar { background: #fff; border-bottom: 1px solid #E0E0E0; padding: 0 32px; display: flex; gap: 4px; overflow-x: auto; }
+    .ticker-btn { padding: 12px 16px; font-size: 13px; font-weight: 500; border: none; background: none; cursor: pointer; color: #6B7280; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; }
+    .ticker-btn:hover { color: #1A1A2E; }
+    .ticker-btn.active { color: #1565C0; border-bottom-color: #1565C0; }
+
+    .main { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: #fff; border: 1px solid #E0E0E0; border-radius: 12px; padding: 20px; }
+    .stat-label { font-size: 11px; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .stat-value { font-size: 28px; font-weight: 600; }
+    .stat-sub { font-size: 13px; margin-top: 4px; }
+    .up { color: #00897B; }
+    .down { color: #E53935; }
+    .neutral { color: #6B7280; }
+
+    .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .chart-card { background: #fff; border: 1px solid #E0E0E0; border-radius: 12px; padding: 20px; }
+    .chart-title { font-size: 13px; font-weight: 500; color: #6B7280; margin-bottom: 12px; }
+
+    .headlines-card { background: #fff; border: 1px solid #E0E0E0; border-radius: 12px; padding: 20px; }
+    .headlines-title { font-size: 13px; font-weight: 500; color: #6B7280; margin-bottom: 12px; }
+    .headline-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #F3F4F6; gap: 12px; }
+    .headline-row:last-child { border-bottom: none; }
+    .headline-text { font-size: 13px; color: #1A1A2E; line-height: 1.4; flex: 1; }
+    .headline-source { font-size: 11px; color: #6B7280; margin-top: 2px; }
+    .sentiment-pill { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+    .pill-positive { background: #E8F5E9; color: #00897B; }
+    .pill-negative { background: #FFEBEE; color: #E53935; }
+    .pill-neutral { background: #F3F4F6; color: #6B7280; }
+
+    .loading { text-align: center; padding: 60px; color: #6B7280; font-size: 14px; }
+    .error { text-align: center; padding: 60px; color: #E53935; font-size: 14px; }
+    .wake-notice { background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #F57F17; margin-bottom: 20px; display: none; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>StockPulse <span>/ Analytics</span></h1>
+  <span class="api-badge">Live API</span>
+</div>
+
+<div class="ticker-bar">
+  <button class="ticker-btn active" onclick="loadTicker('AAPL')">AAPL</button>
+  <button class="ticker-btn" onclick="loadTicker('TSLA')">TSLA</button>
+  <button class="ticker-btn" onclick="loadTicker('NVDA')">NVDA</button>
+  <button class="ticker-btn" onclick="loadTicker('MSFT')">MSFT</button>
+  <button class="ticker-btn" onclick="loadTicker('GOOGL')">GOOGL</button>
+  <button class="ticker-btn" onclick="loadTicker('AMZN')">AMZN</button>
+  <button class="ticker-btn" onclick="loadTicker('META')">META</button>
+  <button class="ticker-btn" onclick="loadTicker('JPM')">JPM</button>
+  <button class="ticker-btn" onclick="loadTicker('NFLX')">NFLX</button>
+  <button class="ticker-btn" onclick="loadTicker('AMD')">AMD</button>
+</div>
+
+<div class="main">
+  <div class="wake-notice" id="wake-notice">
+    The API is waking up from inactivity — this may take up to 50 seconds. Hang tight...
+  </div>
+
+  <div id="content">
+    <div class="loading">Loading market data...</div>
+  </div>
+</div>
+
+<script>
+  const API = 'https://stockpulse-api-rt7t.onrender.com';
+  let currentTicker = 'AAPL';
+  let wakeTimer;
+
+  async function fetchAll(ticker) {
+    const [priceRes, sentRes, predRes] = await Promise.all([
+      fetch(`${API}/prices/${ticker}?limit=60`),
+      fetch(`${API}/sentiment/${ticker}`),
+      fetch(`${API}/prediction/${ticker}`)
+    ]);
+    const prices = await priceRes.json();
+    const sentiment = await sentRes.json();
+    const prediction = await predRes.json();
+    return { prices: prices.prices, sentiment, prediction };
+  }
+
+  function formatNum(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+  function render(ticker, data) {
+    const { prices, sentiment, prediction } = data;
+    const reversed = [...prices].reverse();
+    const dates = reversed.map(p => p.date);
+    const closes = reversed.map(p => p.close);
+    const volumes = reversed.map(p => p.volume);
+
+    const priceUp = closes[closes.length - 1] >= closes[0];
+    const change = closes[closes.length - 1] - closes[0];
+    const changePct = (change / closes[0]) * 100;
+    const predUp = prediction.prediction === 'Up';
+    const avgSent = sentiment.average_sentiment;
+    const sentLabel = avgSent > 0.05 ? 'Bullish' : avgSent < -0.05 ? 'Bearish' : 'Neutral';
+    const sentClass = avgSent > 0.05 ? 'up' : avgSent < -0.05 ? 'down' : 'neutral';
+    const priceClass = priceUp ? 'up' : 'down';
+    const predClass = predUp ? 'up' : 'down';
+
+    const volColors = closes.map((c, i) => i === 0 ? '#00897B' : c >= closes[i-1] ? '#00897B' : '#E53935');
+
+    const headlinesHTML = sentiment.headlines.slice(0, 8).map(h => `
+      <div class="headline-row">
+        <div>
+          <div class="headline-text">${h.headline}</div>
+          <div class="headline-source">${h.source || 'Yahoo Finance'}</div>
+        </div>
+        <span class="sentiment-pill pill-${h.sentiment_label}">${h.sentiment_label.charAt(0).toUpperCase() + h.sentiment_label.slice(1)}</span>
+      </div>
+    `).join('');
+
+    document.getElementById('content').innerHTML = `
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Latest Close</div>
+          <div class="stat-value">$${formatNum(closes[closes.length - 1])}</div>
+          <div class="stat-sub ${priceClass}">${priceUp ? '▲' : '▼'} ${Math.abs(changePct).toFixed(2)}% over 60 days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">ML Prediction</div>
+          <div class="stat-value ${predClass}">${predUp ? '▲' : '▼'} ${prediction.prediction}</div>
+          <div class="stat-sub neutral">Confidence: ${(prediction.confidence * 100).toFixed(1)}%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Sentiment</div>
+          <div class="stat-value ${sentClass}">${sentLabel}</div>
+          <div class="stat-sub neutral">Score: ${avgSent >= 0 ? '+' : ''}${avgSent.toFixed(3)}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Headlines Analyzed</div>
+          <div class="stat-value">${sentiment.headlines.length}</div>
+          <div class="stat-sub neutral">From Yahoo Finance News</div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-title">Price — Last 60 Days</div>
+          <div id="price-chart"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Volume</div>
+          <div id="volume-chart"></div>
+        </div>
+      </div>
+
+      <div class="headlines-card">
+        <div class="headlines-title">Recent Headlines & Sentiment</div>
+        ${headlinesHTML}
+      </div>
+    `;
+
+    const layoutBase = {
+      margin: { t: 10, b: 40, l: 50, r: 10 },
+      paper_bgcolor: 'white',
+      plot_bgcolor: '#FAFAFA',
+      font: { family: 'Inter, Arial, sans-serif', size: 11, color: '#6B7280' },
+      xaxis: { gridcolor: '#E0E0E0', linecolor: '#E0E0E0', showgrid: true },
+      yaxis: { gridcolor: '#E0E0E0', linecolor: '#E0E0E0', showgrid: true }
+    };
+
+    Plotly.newPlot('price-chart', [{
+      x: dates, y: closes,
+      type: 'scatter', mode: 'lines',
+      line: { color: priceUp ? '#00897B' : '#E53935', width: 2 },
+      fill: 'tozeroy',
+      fillcolor: priceUp ? 'rgba(0,137,123,0.08)' : 'rgba(229,57,53,0.08)',
+      hovertemplate: '<b>%{x}</b><br>$%{y:.2f}<extra></extra>'
+    }], { ...layoutBase, height: 280 }, { responsive: true, displayModeBar: false });
+
+    Plotly.newPlot('volume-chart', [{
+      x: dates, y: volumes,
+      type: 'bar',
+      marker: { color: volColors, line: { width: 0 } },
+      opacity: 0.7,
+      hovertemplate: '<b>%{x}</b><br>%{y:,.0f}<extra></extra>'
+    }], { ...layoutBase, height: 280 }, { responsive: true, displayModeBar: false });
+  }
+
+  async function loadTicker(ticker) {
+    currentTicker = ticker;
+    document.querySelectorAll('.ticker-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent === ticker);
+    });
+
+    document.getElementById('content').innerHTML = '<div class="loading">Loading market data...</div>';
+
+    wakeTimer = setTimeout(() => {
+      document.getElementById('wake-notice').style.display = 'block';
+    }, 3000);
+
+    try {
+      const data = await fetchAll(ticker);
+      clearTimeout(wakeTimer);
+      document.getElementById('wake-notice').style.display = 'none';
+      render(ticker, data);
+    } catch (e) {
+      clearTimeout(wakeTimer);
+      document.getElementById('wake-notice').style.display = 'none';
+      document.getElementById('content').innerHTML = '<div class="error">Failed to load data. The API may be waking up — please refresh in 30 seconds.</div>';
+    }
+  }
+
+  loadTicker('AAPL');
+</script>
+</body>
+</html>
